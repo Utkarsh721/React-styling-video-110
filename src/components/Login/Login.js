@@ -1,8 +1,10 @@
-import React, { useState, useEffect, useReducer } from 'react';
+import React, { useState, useEffect, useReducer,useContext } from 'react';
 
 import Card from '../UI/Card/Card';
 import classes from './Login.module.css';
 import Button from '../UI/Button/Button';
+import Input from '../UI/input/Input';
+import AuthContext from '../../Store/auth-context';
 
 const emailReducer = (state, action) => {
   if(action.type === 'USER_INPUT'){
@@ -42,7 +44,7 @@ const Login = (props) => {
     value: '',
     isValid: null
   });
-
+  const authCtx=useContext(AuthContext);
   const { isValid: emailIsValid} = emailState;
   const { isValid: passwordISValid} = passwordState;
 
@@ -98,25 +100,33 @@ const Login = (props) => {
   }
   const submitHandler = (event) => {
     event.preventDefault();
-    props.onLogin(emailState.value, passwordState.value, enteredCollage);
+    authCtx.onLogin(emailState.value, passwordState.value, enteredCollage);
   };
 
   return (
     <Card className={classes.login}>
       <form onSubmit={submitHandler}>
-        <div
-          className={`${classes.control} ${emailState.isValid === false ? classes.invalid : ''
-            }`}
+       <Input 
+       id="email"
+        label="E-Mail" 
+        type="email" 
+        isValid={emailIsValid} 
+        value={emailState.value}
+        onChange={emailChangeHandler}
+        onBlur={validateEmailHandler}
         >
-          <label htmlFor="email">E-Mail</label>
-          <input
-            type="email"
-            id="email"
-            value={emailState.value}
-            onChange={emailChangeHandler}
-            onBlur={validateEmailHandler}
-          />
-        </div>
+
+        </Input>
+        <Input 
+       id="password"
+        label="password" 
+        type="password" 
+        isValid={passwordISValid} 
+        value={passwordState.value}
+        onChange={passwordChangeHandler}
+        onBlur={validatePasswordHandler}
+        >
+         </Input>
         <div
           className={`${classes.control} ${passwordState.isValid === false ? classes.invalid : ''
             }`}
